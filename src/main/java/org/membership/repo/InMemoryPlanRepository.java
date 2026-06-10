@@ -14,7 +14,7 @@ public class InMemoryPlanRepository implements PlanRepository {
     @Override
     public MembershipPlan save(MembershipPlan plan) {
         String id = plan.id != null ? plan.id : String.valueOf(idGen.incrementAndGet());
-        var p = new MembershipPlan(id, plan.name, plan.duration, plan.price, plan.benefits);
+        MembershipPlan p = new MembershipPlan(id, plan.name, plan.duration, plan.price, plan.benefits);
         map.put(id, p);
         return p;
     }

@@ -15,7 +15,7 @@ public class InMemorySubscriptionRepository implements SubscriptionRepository {
     @Override
     public Subscription save(Subscription s) {
         String id = s.id != null ? s.id : String.valueOf(idGen.incrementAndGet());
-        var out = new Subscription(id, s.userId, s.planId, s.tier, s.startAt, s.expiresAt);
+        Subscription out = new Subscription(id, s.userId, s.planId, s.tier, s.startAt, s.expiresAt);
         out.status = s.status;
         map.put(id, out);
         return out;

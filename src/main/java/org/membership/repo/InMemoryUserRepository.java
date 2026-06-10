@@ -13,7 +13,7 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public User save(User user) {
         String id = user.id != null ? user.id : String.valueOf(idGen.incrementAndGet());
-        var u = new User(id, user.name, user.cohort);
+        User u = new User(id, user.name, user.cohort);
         map.put(id, u);
         return u;
     }

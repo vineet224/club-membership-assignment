@@ -17,5 +17,4 @@ public class Subscription {
         this.id = id; this.userId = userId; this.planId = planId; this.tier = tier; this.startAt = startAt; this.expiresAt = expiresAt; this.status = Status.ACTIVE;
     }
 
-    // Let Jackson handle serialization
 }

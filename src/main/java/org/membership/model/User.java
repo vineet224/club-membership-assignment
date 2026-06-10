@@ -1,13 +1,20 @@
 package org.membership.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class User {
     public final String id;
     public final String name;
-    public final String cohort; // optional cohort tag // but this must not be here as user can belong to multiple cohort at a single time
-    // why we don't have the membership tier here? because a user can have multiple subscriptions with different tiers over time
+    public final String cohort; 
+    public final List<Purchase> purchases = new ArrayList<>();
 
     public User(String id, String name, String cohort) {
         this.id = id; this.name = name; this.cohort = cohort;
+    }
+
+    public synchronized void recordPurchase(Purchase p) {
+        purchases.add(p);
     }
 
     @Override public String toString() {
