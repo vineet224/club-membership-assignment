@@ -2,6 +2,7 @@ package org.membership.controller;
 
 import org.membership.dto.PurchaseRequest;
 import org.membership.dto.SubscriptionRequest;
+import org.membership.exception.ActiveSubscriptionException;
 import org.membership.model.MembershipPlan;
 import org.membership.model.MemberShipTier;
 import org.membership.model.Subscription;
@@ -10,9 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/")
@@ -30,7 +32,7 @@ public class HttpController {
     }
 
     @PostMapping("subscribe")
-    public ResponseEntity<Subscription> subscribe(@RequestBody SubscriptionRequest body) {
+    public ResponseEntity<?> subscribe(@RequestBody SubscriptionRequest body) {
         if (body == null || body.userId() == null || body.planId() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -40,9 +42,14 @@ public class HttpController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        Optional<Subscription> sub = service.subscribe(body.userId(), body.planId(), tier);
-        if (sub.isEmpty()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        return ResponseEntity.status(HttpStatus.CREATED).body(sub.get());
+
+        try {
+            Optional<Subscription> sub = service.subscribe(body.userId(), body.planId(), tier);
+            if (sub.isEmpty()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.CREATED).body(sub.get());
+        } catch (ActiveSubscriptionException ex) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", ex.getMessage()));
+        }
     }
 
     @PostMapping("purchase")

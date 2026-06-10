@@ -1,5 +1,6 @@
 package org.membership.service;
 
+import org.membership.exception.ActiveSubscriptionException;
 import org.membership.model.MemberShipTier;
 import org.membership.model.Subscription;
 import org.membership.model.MembershipPlan;
@@ -29,6 +30,15 @@ public class MembershipService {
     public Optional<Subscription> subscribe(String userId, String planId, MemberShipTier tier) {
         MembershipPlan plan = planService.get(planId);
         if (plan == null) return Optional.empty();
+
+        // move active subscription check to service layer
+        List<Subscription> existing = subscriptionService.getByUser(userId);
+        for (Subscription ex : existing) {
+            if (ex.status == Subscription.Status.ACTIVE) {
+                throw new ActiveSubscriptionException("user already has an active subscription");
+            }
+        }
+
         Subscription s = new Subscription(null, userId, planId, tier, java.time.Instant.now(), java.time.Instant.now());
         return Optional.of(subscriptionService.save(s));
     }
