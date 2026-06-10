@@ -31,7 +31,6 @@ public class MembershipService {
         MembershipPlan plan = planService.get(planId);
         if (plan == null) return Optional.empty();
 
-        // move active subscription check to service layer
         List<Subscription> existing = subscriptionService.getByUser(userId);
         for (Subscription ex : existing) {
             if (ex.status == Subscription.Status.ACTIVE) {
