@@ -1,19 +1,27 @@
 plugins {
-    id("java")
+    id("org.springframework.boot") version "3.2.2"
+    id("io.spring.dependency-management") version "1.1.0"
+    java
 }
 
-group = "org.example"
-version = "1.0-SNAPSHOT"
+group = "org.membership"
+version = "0.1.0"
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
-tasks.test {
-    useJUnitPlatform()
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+}
+
+// optional: configure bootRun main class
+tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
+    mainClass.set("org.membership.FirstClubApplication")
 }
